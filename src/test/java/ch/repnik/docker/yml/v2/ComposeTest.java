@@ -270,4 +270,52 @@ public class ComposeTest {
 		Validator testee = new ValidatorV2Impl(content);
 		testee.validate();
 	}
+	
+	@Test
+	public void envfile_validString_successful() throws Exception {
+		String content = "env_file: .env";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void envfile_validList_successful() throws Exception {
+		String content = "env_file:\n  - ./common.env";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void envfile_asMap_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be either from type String or List");
+		String content = "env_file:\n   dummy: php";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void environment_validMap_successful() throws Exception {
+		String content = "environment:\n  RACK_ENV: development";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void environment_validList_successful() throws Exception {
+		String content = "environment:\n  - RACK_ENV=development";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void environment_asString_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be either from type List or Map");
+		String content = "environment: .";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+
 }
