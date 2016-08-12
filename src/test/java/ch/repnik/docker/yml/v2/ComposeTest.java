@@ -6,7 +6,6 @@ import org.junit.rules.ExpectedException;
 
 import ch.repnik.docker.DockerComposeValidationException;
 import ch.repnik.docker.Validator;
-import ch.repnik.docker.yml.v1.ValidatorV1Impl;
 
 public class ComposeTest {
 
@@ -49,7 +48,7 @@ public class ComposeTest {
 	public void context_missing_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("/context' is missing");
-		String content = "build:\n   args: .";
+		String content = "build:\n   args:\n   buildno: 1";
 		Validator testee = new ValidatorV2Impl(content);
 		testee.validate();
 	}
