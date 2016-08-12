@@ -1,0 +1,5 @@
+build:
+  context: .
+  args:
+    buildno: 1
+    password: secret
