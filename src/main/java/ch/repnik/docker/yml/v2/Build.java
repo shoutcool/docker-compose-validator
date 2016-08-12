@@ -10,7 +10,7 @@ import ch.repnik.docker.validation.YamlValidator;
 @YamlProperty(path=Build.PATH)
 public class Build implements YamlValidator<Object>{
 	
-	public final static String PATH = "/build";
+	protected final static String PATH = "/build";
 	
 	public void validate(Object value) throws DockerComposeValidationException {
 		

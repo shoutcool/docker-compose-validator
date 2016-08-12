@@ -115,4 +115,159 @@ public class ComposeTest {
 		testee.validate();
 	}
 	
+	@Test
+	public void command_validString_successful() throws Exception {
+		String content = "command: .";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void command_validList_successful() throws Exception {
+		String content = "command: [bundle, exec, thin, -p, 3000]";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void command_asMap_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be either from type String or List");
+		String content = "command:\n   cmd1: exec";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void cGroupParent_valid_successful() throws Exception {
+		String content = "cgroup_parent: m-executor-abcd";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void cGroupParent_empty_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must not be empty");
+		String content = "cgroup_parent:";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void containerName_valid_successful() throws Exception {
+		String content = "container_name: my-web-container";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void containerName_empty_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must not be empty");
+		String content = "container_name:";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void devices_validList_successful() throws Exception {
+		String content = "devices:\n  - /dev/ttyUSB0:/dev/ttyUSB0";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	//TODO: depends_on seems a little more complicated...not yet implemented
+	
+	@Test
+	public void dns_validString_successful() throws Exception {
+		String content = "dns: 8.8.8.8";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void dns_validList_successful() throws Exception {
+		String content = "dns:\n  - 8.8.8.8\n  - 9.9.9.9";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void dns_asMap_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be either from type String or List");
+		String content = "dns:\n   cmd1: exec";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void dnsSearch_validString_successful() throws Exception {
+		String content = "dns_search: example.com";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void dnsSearch_validList_successful() throws Exception {
+		String content = "dns_search:\n  - dc1.example.com\n  - dc2.example.com";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void dnsSearch_asMap_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be either from type String or List");
+		String content = "dns_search:\n   dns1: dc1.example.com";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void tmpfs_validString_successful() throws Exception {
+		String content = "tmpfs: /run";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void tmpfs_validList_successful() throws Exception {
+		String content = "tmpfs:\n  - /run\n  - /tmp";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void tmpfs_asMap_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be either from type String or List");
+		String content = "tmpfs:\n   fs1: /run";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void entrypoint_validString_successful() throws Exception {
+		String content = "entrypoint: /code/entrypoint.sh";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void entrypoint_validList_successful() throws Exception {
+		String content = "entrypoint:\n  - php\n  - d";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void entrypoint_asMap_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be either from type String or List");
+		String content = "entrypoint:\n   dummy: php";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
 }

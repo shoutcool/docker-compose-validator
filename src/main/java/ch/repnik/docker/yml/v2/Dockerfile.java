@@ -1,17 +1,14 @@
 package ch.repnik.docker.yml.v2;
 
-import ch.repnik.docker.DockerComposeValidationException;
 import ch.repnik.docker.validation.YamlProperty;
-import ch.repnik.docker.validation.YamlValidator;
+import ch.repnik.docker.yml.common.AbstractGenericString;
 
 @YamlProperty(path=Dockerfile.PATH)
-public class Dockerfile implements YamlValidator<String>{
+public class Dockerfile extends AbstractGenericString{
+
+	protected final static String PATH = "/build/dockerfile";
 	
-	public final static String PATH = "/build/dockerfile";
-	
-	public void validate(String value) throws DockerComposeValidationException {
-		if (value.trim().isEmpty()){
-			throw new DockerComposeValidationException(String.format("String '%s' must not be empty", PATH));
-		}
+	public Dockerfile() {
+		super(PATH);
 	}
 }

@@ -11,7 +11,7 @@ import ch.repnik.docker.validation.YamlValidator;
 @YamlProperty(path=Args.PATH)
 public class Args implements YamlValidator<Object>{
 	
-	public final static String PATH = "/build/args";
+	protected final static String PATH = "/build/args";
 	
 	@SuppressWarnings("unchecked")
 	public void validate(Object value) throws DockerComposeValidationException {
