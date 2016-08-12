@@ -48,7 +48,7 @@ public class ComposeTest {
 	public void context_missing_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("/context' is missing");
-		String content = "build:\n   args:\n   buildno: 1";
+		String content = "build:\n   args:\n      buildno: 1";
 		Validator testee = new ValidatorV2Impl(content);
 		testee.validate();
 	}
