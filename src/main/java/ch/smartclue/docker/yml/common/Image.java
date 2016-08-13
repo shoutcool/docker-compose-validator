@@ -3,9 +3,9 @@ package ch.smartclue.docker.yml.common;
 import ch.smartclue.docker.validation.YamlProperty;
 
 @YamlProperty(path=Image.PATH)
-public class Image extends AbstractGenericList{
+public class Image extends AbstractGenericString{
 
-	protected final static String PATH = "/extra_hosts";
+	protected final static String PATH = "/image";
 	
 	public Image() {
 		super(PATH);

@@ -1,6 +1,8 @@
 package ch.smartclue.docker.validation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -13,10 +15,13 @@ import ch.smartclue.docker.DockerComposeValidationException;
 import ch.smartclue.docker.Validator;
 import ch.smartclue.docker.reader.StructureReader;
 
+@SuppressWarnings("rawtypes")
 public abstract class AbstractValidatorImpl implements Validator {
 	protected Map<String, Object> structure = new HashMap<String, Object>();
-	@SuppressWarnings("rawtypes")
-	protected Map<String, YamlValidator> validators = new HashMap<String, YamlValidator>();
+	protected Map<String, YamlValidator<?>> additionalValidators;
+
+	
+	protected Map<String, List<YamlValidator>> validators = new HashMap<String, List<YamlValidator>>();
 	
 	protected void readStructure(String content) throws DockerComposeValidationException{
 		StructureReader reader = new StructureReader();
@@ -42,7 +47,18 @@ public abstract class AbstractValidatorImpl implements Validator {
 				Class<?> clazz = Class.forName(c.getName());
 				String path = clazz.getAnnotation(YamlProperty.class).path();
 				YamlValidator<?> newInstance = (YamlValidator<?>) clazz.newInstance();
-				validators.put(path, newInstance);
+				
+				List<YamlValidator> currentValidators = null;
+				
+				if (validators.containsKey(path)){
+					currentValidators = validators.get(path);
+				}else{
+					currentValidators = new ArrayList<YamlValidator>();
+				}
+				
+				currentValidators.add(newInstance);
+				
+				validators.put(path, currentValidators);
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -58,14 +74,35 @@ public abstract class AbstractValidatorImpl implements Validator {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void validate(String... packageNamesOfValidators) throws DockerComposeValidationException {
+	protected void validate(Map<String, YamlValidator<?>> additionalValidators, String... packageNamesOfValidators) throws DockerComposeValidationException {
+		
+		//Insert custom validators first
+		for (Entry<String, YamlValidator<?>> entry : additionalValidators.entrySet()){
+			List<YamlValidator> currentValidators = null;
+			
+			if (validators.containsKey(entry.getKey())){
+				currentValidators = validators.get(entry.getKey());
+			}else{
+				currentValidators = new ArrayList<YamlValidator>();
+			}
+			
+			currentValidators.add(entry.getValue());
+			
+			validators.put(entry.getKey(), currentValidators);
+		}
+		
+		
+		//Overwrite custom validators with official ones (in case of conflict only)
 		createAllValidationInstances(packageNamesOfValidators);
 
 		for (Entry<String, Object> entry : structure.entrySet()) {
 			if (validators.containsKey(entry.getKey())) {
-				validators.get(entry.getKey()).validate(entry.getValue());
+				
+				List<YamlValidator> foundValidators = validators.get(entry.getKey());
+				for (YamlValidator instance : foundValidators){
+					instance.validate(entry.getValue());
+				}
 			} 
-			
 		}
 	}
 	
