@@ -15,8 +15,7 @@ public class ComposeTest {
 	
 	@Test
 	public void build_validString_successful() throws Exception {
-		String content = "build: test";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("build"));
 		testee.validate();
 	}
 	
@@ -24,6 +23,7 @@ public class ComposeTest {
 	public void build_emptyString_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must not be empty");
+		//TODO: Is this really a problem?
 		String content = "build:";
 		Validator testee = new ValidatorV2Impl(content);
 		testee.validate();
@@ -88,45 +88,39 @@ public class ComposeTest {
 	
 	@Test
 	public void capAdd_validList_successful() throws Exception {
-		String content = "cap_add:\n   - ALL";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("cap_add"));
 		testee.validate();
 	}
 
 	@Test
 	public void capAdd_asString_throwsException() throws Exception {
 		expectedException.expect(ClassCastException.class);
-		String content = "cap_add: .";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("cap_add"));
 		testee.validate();
 	}
 	
 	@Test
 	public void capDrop_validList_successful() throws Exception {
-		String content = "cap_drop:\n   - ALL";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("cap_drop"));
 		testee.validate();
 	}
 
 	@Test
 	public void capDrop_asString_throwsException() throws Exception {
 		expectedException.expect(ClassCastException.class);
-		String content = "cap_drop: .";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("cap_drop"));
 		testee.validate();
 	}
 	
 	@Test
 	public void command_validString_successful() throws Exception {
-		String content = "command: .";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("command"));
 		testee.validate();
 	}
 	
 	@Test
 	public void command_validList_successful() throws Exception {
-		String content = "command: [bundle, exec, thin, -p, 3000]";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("command"));
 		testee.validate();
 	}
 	
@@ -134,15 +128,13 @@ public class ComposeTest {
 	public void command_asMap_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be either from type String or List");
-		String content = "command:\n   cmd1: exec";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedMap("command"));
 		testee.validate();
 	}
 	
 	@Test
 	public void cGroupParent_valid_successful() throws Exception {
-		String content = "cgroup_parent: m-executor-abcd";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("cgroup_parent"));
 		testee.validate();
 	}
 	
@@ -157,8 +149,7 @@ public class ComposeTest {
 	
 	@Test
 	public void containerName_valid_successful() throws Exception {
-		String content = "container_name: my-web-container";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("container_name"));
 		testee.validate();
 	}
 	
@@ -173,8 +164,7 @@ public class ComposeTest {
 	
 	@Test
 	public void devices_validList_successful() throws Exception {
-		String content = "devices:\n  - /dev/ttyUSB0:/dev/ttyUSB0";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("devices"));
 		testee.validate();
 	}
 	
@@ -182,15 +172,13 @@ public class ComposeTest {
 	
 	@Test
 	public void dns_validString_successful() throws Exception {
-		String content = "dns: 8.8.8.8";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("dns"));
 		testee.validate();
 	}
 	
 	@Test
 	public void dns_validList_successful() throws Exception {
-		String content = "dns:\n  - 8.8.8.8\n  - 9.9.9.9";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("dns"));
 		testee.validate();
 	}
 	
@@ -198,22 +186,19 @@ public class ComposeTest {
 	public void dns_asMap_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be either from type String or List");
-		String content = "dns:\n   cmd1: exec";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedMap("dns"));
 		testee.validate();
 	}
 	
 	@Test
 	public void dnsSearch_validString_successful() throws Exception {
-		String content = "dns_search: example.com";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("dns_search"));
 		testee.validate();
 	}
 	
 	@Test
 	public void dnsSearch_validList_successful() throws Exception {
-		String content = "dns_search:\n  - dc1.example.com\n  - dc2.example.com";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("dns_search"));
 		testee.validate();
 	}
 	
@@ -221,22 +206,19 @@ public class ComposeTest {
 	public void dnsSearch_asMap_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be either from type String or List");
-		String content = "dns_search:\n   dns1: dc1.example.com";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedMap("dns_search"));
 		testee.validate();
 	}
 	
 	@Test
 	public void tmpfs_validString_successful() throws Exception {
-		String content = "tmpfs: /run";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("tmpfs"));
 		testee.validate();
 	}
 	
 	@Test
 	public void tmpfs_validList_successful() throws Exception {
-		String content = "tmpfs:\n  - /run\n  - /tmp";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("tmpfs"));
 		testee.validate();
 	}
 	
@@ -244,22 +226,19 @@ public class ComposeTest {
 	public void tmpfs_asMap_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be either from type String or List");
-		String content = "tmpfs:\n   fs1: /run";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedMap("tmpfs"));
 		testee.validate();
 	}
 	
 	@Test
 	public void entrypoint_validString_successful() throws Exception {
-		String content = "entrypoint: /code/entrypoint.sh";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("entrypoint"));
 		testee.validate();
 	}
 	
 	@Test
 	public void entrypoint_validList_successful() throws Exception {
-		String content = "entrypoint:\n  - php\n  - d";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("entrypoint"));
 		testee.validate();
 	}
 	
@@ -267,22 +246,19 @@ public class ComposeTest {
 	public void entrypoint_asMap_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be either from type String or List");
-		String content = "entrypoint:\n   dummy: php";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedMap("entrypoint"));
 		testee.validate();
 	}
 	
 	@Test
 	public void envfile_validString_successful() throws Exception {
-		String content = "env_file: .env";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("env_file"));
 		testee.validate();
 	}
 	
 	@Test
 	public void envfile_validList_successful() throws Exception {
-		String content = "env_file:\n  - ./common.env";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("env_file"));
 		testee.validate();
 	}
 	
@@ -290,22 +266,19 @@ public class ComposeTest {
 	public void envfile_asMap_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be either from type String or List");
-		String content = "env_file:\n   dummy: php";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedMap("env_file"));
 		testee.validate();
 	}
 	
 	@Test
 	public void environment_validMap_successful() throws Exception {
-		String content = "environment:\n  RACK_ENV: development";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedMap("environment"));
 		testee.validate();
 	}
 	
 	@Test
 	public void environment_validList_successful() throws Exception {
-		String content = "environment:\n  - RACK_ENV=development";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("environment"));
 		testee.validate();
 	}
 	
@@ -313,23 +286,20 @@ public class ComposeTest {
 	public void environment_asString_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be either from type List or Map");
-		String content = "environment: .";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("environment"));
 		testee.validate();
 	}
 	
 	@Test
 	public void expose_validList_successful() throws Exception {
-		String content = "expose:\n - \"3000\"";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("expose"));
 		testee.validate();
 	}
 	
 	@Test
 	public void expose_asString_throwsException() throws Exception {
 		expectedException.expect(ClassCastException.class);
-		String content = "expose: 3000";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("expose"));
 		testee.validate();
 	}
 	
@@ -353,67 +323,58 @@ public class ComposeTest {
 	public void extends_asString_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be from type Map");
-		String content = "extends: common";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("extends"));
 		testee.validate();
 	}
 	
 	@Test
 	public void externalLinks_validList_successful() throws Exception {
-		String content = "external_links:\n - redis_1";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("content"));
 		testee.validate();
 	}
 	
 	@Test
 	public void externalLinks_asString_throwsException() throws Exception {
 		expectedException.expect(ClassCastException.class);
-		String content = "external_links: redis_1";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("external_links"));
 		testee.validate();
 	}
 	
 	@Test
 	public void extraHosts_validList_successful() throws Exception {
-		String content = "extra_hosts:\n - \"somehost:162.242.195.82\"";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("extra_hosts"));
 		testee.validate();
 	}
 	
 	@Test
 	public void extraHosts_asString_throwsException() throws Exception {
 		expectedException.expect(ClassCastException.class);
-		String content = "extra_hosts: \"somehost:162.242.195.82\"";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("extra_hosts"));
 		testee.validate();
 	}
 	
 	@Test
 	public void image_validString_successful() throws Exception {
-		String content = "image: myImage";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("image"));
 		testee.validate();
 	}
 	
 	@Test
 	public void image_asList_throwsException() throws Exception {
 		expectedException.expect(ClassCastException.class);
-		String content = "image:\n   - myImage";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("image"));
 		testee.validate();
 	}
 	
 	@Test
 	public void labels_validMap_successful() throws Exception {
-		String content = "labels:\n  RACK_ENV: development";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedMap("labels"));
 		testee.validate();
 	}
 	
 	@Test
 	public void labels_validList_successful() throws Exception {
-		String content = "labels:\n  - RACK_ENV=development";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedList("labels"));
 		testee.validate();
 	}
 	
@@ -421,8 +382,27 @@ public class ComposeTest {
 	public void labels_asString_throwsException() throws Exception {
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must be either from type List or Map");
-		String content = "labels: .";
-		Validator testee = new ValidatorV2Impl(content);
+		Validator testee = new ValidatorV2Impl(createNamedString("labels"));
 		testee.validate();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private String createNamedList(String name){
+		return String.format("%s:\n   - dummyListEntry", name);
+	}
+	
+	private String createNamedMap(String name){
+		return String.format("%s:\n   dummyKey: dummyValue", name);
+	}
+	
+	private String createNamedString(String name){
+		return String.format("%s: dummyString", name);
 	}
 }
