@@ -1,4 +1,4 @@
-package ch.repnik.docker.yml.v2;
+package ch.smartclue.docker.yml.v2;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -318,5 +318,111 @@ public class ComposeTest {
 		testee.validate();
 	}
 	
+	@Test
+	public void expose_validList_successful() throws Exception {
+		String content = "expose:\n - \"3000\"";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void expose_asString_throwsException() throws Exception {
+		expectedException.expect(ClassCastException.class);
+		String content = "expose: 3000";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void extends_validMap_successful() throws Exception {
+		String content = "extends:\n  service: common";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
 
+	@Test
+	public void extends_missingService_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("/service' is missing");
+		String content = "extends:\n  file: common.yml";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void extends_asString_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be from type Map");
+		String content = "extends: common";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void externalLinks_validList_successful() throws Exception {
+		String content = "external_links:\n - redis_1";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void externalLinks_asString_throwsException() throws Exception {
+		expectedException.expect(ClassCastException.class);
+		String content = "external_links: redis_1";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void extraHosts_validList_successful() throws Exception {
+		String content = "extra_hosts:\n - \"somehost:162.242.195.82\"";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void extraHosts_asString_throwsException() throws Exception {
+		expectedException.expect(ClassCastException.class);
+		String content = "extra_hosts: \"somehost:162.242.195.82\"";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void image_validString_successful() throws Exception {
+		String content = "image: myImage";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void image_asList_throwsException() throws Exception {
+		expectedException.expect(ClassCastException.class);
+		String content = "image:\n   - myImage";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void labels_validMap_successful() throws Exception {
+		String content = "labels:\n  RACK_ENV: development";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void labels_validList_successful() throws Exception {
+		String content = "labels:\n  - RACK_ENV=development";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
+	
+	@Test
+	public void labels_asString_throwsException() throws Exception {
+		expectedException.expect(DockerComposeValidationException.class);
+		expectedException.expectMessage("must be either from type List or Map");
+		String content = "labels: .";
+		Validator testee = new ValidatorV2Impl(content);
+		testee.validate();
+	}
 }

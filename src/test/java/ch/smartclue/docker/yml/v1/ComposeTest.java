@@ -1,4 +1,4 @@
-package ch.repnik.docker.yml.v1;
+package ch.smartclue.docker.yml.v1;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -6,8 +6,6 @@ import org.junit.rules.ExpectedException;
 
 import ch.smartclue.docker.DockerComposeValidationException;
 import ch.smartclue.docker.Validator;
-import ch.smartclue.docker.yml.v1.ValidatorV1Impl;
-import ch.smartclue.docker.yml.v2.ValidatorV2Impl;
 
 public class ComposeTest {
 
