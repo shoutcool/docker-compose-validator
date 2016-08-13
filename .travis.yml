@@ -1,5 +1,5 @@
 language: java
-script: mvn verify -P travis-ci
+script: mvn --settings .travis/settings.xml verify -Ptravis-ci
 install:
   - mvn --settings .travis/settings.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 before_install:
