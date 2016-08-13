@@ -4,8 +4,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import ch.repnik.docker.DockerComposeValidationException;
-import ch.repnik.docker.Validator;
+import ch.smartclue.docker.DockerComposeValidationException;
+import ch.smartclue.docker.Validator;
+import ch.smartclue.docker.yml.v2.ValidatorV2Impl;
 
 public class ComposeTest {
 
