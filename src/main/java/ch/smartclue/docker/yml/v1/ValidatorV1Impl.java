@@ -1,5 +1,6 @@
 package ch.smartclue.docker.yml.v1;
 
+import java.util.Collections;
 import java.util.Map;
 
 import ch.smartclue.docker.DockerComposeValidationException;
@@ -8,6 +9,10 @@ import ch.smartclue.docker.validation.YamlValidator;
 
 public class ValidatorV1Impl extends AbstractValidatorImpl {
 
+	public ValidatorV1Impl(String content) throws DockerComposeValidationException{
+		this(content, Collections.<String, YamlValidator<?>>emptyMap());
+	}
+	
 	public ValidatorV1Impl(String content, Map<String,YamlValidator<?>> additionalValidators) throws DockerComposeValidationException {
 		this.additionalValidators = additionalValidators;
 		readStructure(content);
