@@ -407,7 +407,15 @@ public class ValidatorV2Test {
 	
 	@Test
 	public void links_validList_successful() throws Exception {
-		String content = "web:\n   links:\n      -db:database";
+		String content = "web:\n   links:\n      - db";
+		Validator testee = new ValidatorV2Impl(content, validatorManager);
+		testee.validate();
+	}
+	
+	@Test
+	public void links_asString_throwsException() throws Exception {
+		expectedException.expect(ClassCastException.class);
+		String content = "web:\n   links: bla";
 		Validator testee = new ValidatorV2Impl(content, validatorManager);
 		testee.validate();
 	}

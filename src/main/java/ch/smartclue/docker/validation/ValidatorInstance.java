@@ -9,6 +9,7 @@ class ValidatorInstance {
 	private YamlValidator validator;
 	private boolean isBuiltInValidator;
 	private DockerComposeVersion version;
+	private boolean isContainerNode;
 	
 	public ValidatorInstance(YamlValidator validator, boolean isBuiltInValidator){
 		
@@ -18,6 +19,7 @@ class ValidatorInstance {
 		this.version = annotation.version();
 		this.isBuiltInValidator = isBuiltInValidator;
 		this.validator = validator;
+		this.isContainerNode = annotation.containerProperty();
 	}
 
 	public String getPath() {
@@ -35,4 +37,9 @@ class ValidatorInstance {
 	public DockerComposeVersion getVersion() {
 		return version;
 	}
+
+	public boolean isContainerNode() {
+		return isContainerNode;
+	}
+
 }

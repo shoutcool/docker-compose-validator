@@ -29,15 +29,25 @@ abstract class AbstractValidatorImpl implements Validator {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected void validate(DockerComposeVersion... versions) throws DockerComposeValidationException {
 		for (Entry<String, Object> entry : structure.entrySet()) {
 			List<ValidatorInstance> validatorInstancesByVersion = validatorManager.getValidatorInstancesByVersion(versions);
 			List<ValidatorInstance> filterValidatorsByPath = ValidatorInstanceFilter.filterValidatorsByPath(validatorInstancesByVersion, entry.getKey());
 
-			for (ValidatorInstance instance : filterValidatorsByPath){
-				instance.getValidator().validate(entry.getValue());
+			if (filterValidatorsByPath.isEmpty()){
+				//threat as container node
+				List<ValidatorInstance> containerValidators = ValidatorInstanceFilter.filterValidatorsByContainerNode(validatorInstancesByVersion, true, entry.getKey());
+				executeValidators(containerValidators, entry.getValue());
+			}else{
+				executeValidators(filterValidatorsByPath, entry.getValue());
 			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void executeValidators(List<ValidatorInstance> validators, Object nodeValue) throws DockerComposeValidationException{
+		for (ValidatorInstance instance : validators){
+			instance.getValidator().validate(nodeValue);
 		}
 	}
 

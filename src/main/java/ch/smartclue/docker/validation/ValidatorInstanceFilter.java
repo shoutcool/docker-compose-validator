@@ -18,6 +18,10 @@ class ValidatorInstanceFilter {
 		 return Lists.newArrayList(Iterables.filter(validators, createPathPredicate(path)));
 	}
 	
+	public static List<ValidatorInstance> filterValidatorsByContainerNode(List<ValidatorInstance> validators, boolean isContainerNode, String key){
+		 return Lists.newArrayList(Iterables.filter(validators, createContainerNodePredicate(isContainerNode, key)));
+	}
+	
 	private static Predicate<ValidatorInstance> createVersionPredicate(final DockerComposeVersion[] versions) {
 	    return new Predicate<ValidatorInstance>() {
 	        public boolean apply(ValidatorInstance input) {
@@ -37,5 +41,23 @@ class ValidatorInstanceFilter {
 	            return input.getPath().equals(path);
 	        }
 	    };
+	}
+
+	private static Predicate<ValidatorInstance> createContainerNodePredicate(final boolean isContainerNode, final String key) {
+	    return new Predicate<ValidatorInstance>() {
+	        public boolean apply(ValidatorInstance input) {
+	            return input.isContainerNode() == isContainerNode &&
+	            		input.getPath().replace("${container}", getContainerName(key)).equals(key);
+	        }
+	    };
+	}
+
+	private static String getContainerName(String key) {
+		int endIndex = key.indexOf("/", 1);
+		if (endIndex != -1){
+			return key.substring(1, endIndex);			
+		}else{
+			return key.substring(1);
+		}
 	}
 }
