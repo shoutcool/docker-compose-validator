@@ -1,6 +1,6 @@
 package ch.smartclue.docker.yml.common;
 
-import ch.smartclue.docker.DockerComposeValidationException;
+import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.validation.YamlValidator;
 
 public abstract class AbstractGenericString implements YamlValidator<String> {

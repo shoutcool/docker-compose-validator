@@ -3,11 +3,12 @@ package ch.smartclue.docker.yml.v2;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.smartclue.docker.DockerComposeValidationException;
+import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.validation.YamlProperty;
 import ch.smartclue.docker.validation.YamlValidator;
+import ch.smartclue.docker.yml.common.DockerComposeVersion;
 
-@YamlProperty(path=Build.PATH)
+@YamlProperty(path=Build.PATH, version=DockerComposeVersion.V2)
 public class Build implements YamlValidator<Object>{
 	
 	protected final static String PATH = "/build";

@@ -2,7 +2,7 @@ package ch.smartclue.docker.yml.common;
 
 import java.util.List;
 
-import ch.smartclue.docker.DockerComposeValidationException;
+import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.validation.YamlValidator;
 
 public abstract class AbstractGenericList implements YamlValidator<List<String>> {

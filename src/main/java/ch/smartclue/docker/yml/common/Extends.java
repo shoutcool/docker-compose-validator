@@ -3,11 +3,11 @@ package ch.smartclue.docker.yml.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.smartclue.docker.DockerComposeValidationException;
+import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.validation.YamlProperty;
 import ch.smartclue.docker.validation.YamlValidator;
 
-@YamlProperty(path = Extends.PATH)
+@YamlProperty(path = Extends.PATH, version=DockerComposeVersion.ALL)
 public class Extends implements YamlValidator<Object> {
 
 	protected final static String PATH = "/extends";

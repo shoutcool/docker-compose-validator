@@ -1,9 +1,9 @@
-package ch.smartclue.docker.yml.v1;
+package ch.smartclue.docker.validation;
 
-import ch.smartclue.docker.DockerComposeValidationException;
+import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.validation.YamlValidator;
 
-public class CustomImageValidator implements YamlValidator<String> {
+public class CustomImageValidatorWithoutAnnotation implements YamlValidator<String> {
 
 	public static final String PATH = "/image";
 	

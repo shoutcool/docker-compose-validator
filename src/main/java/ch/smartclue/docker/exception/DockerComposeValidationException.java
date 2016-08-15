@@ -1,4 +1,4 @@
-package ch.smartclue.docker;
+package ch.smartclue.docker.exception;
 
 public class DockerComposeValidationException extends Exception {
 
