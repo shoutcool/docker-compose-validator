@@ -427,6 +427,19 @@ public class ValidatorV2Test {
 		testee.validate();
 	}
 	
+	@Test
+	public void logging_validMap_successful() throws Exception {
+		Validator testee = new ValidatorV2Impl(createNamedMap("logging"), validatorManager);
+		testee.validate();
+	}
+	
+	@Test
+	public void logging_asString_successful() throws Exception {
+		expectedException.expect(ClassCastException.class);
+		Validator testee = new ValidatorV2Impl(createNamedString("logging"), validatorManager);
+		testee.validate();
+	}
+	
 	
 	private String createNamedList(String name){
 		return String.format("%s:\n   - dummyListEntry", name);
