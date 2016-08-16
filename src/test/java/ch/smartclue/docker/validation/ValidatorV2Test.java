@@ -440,6 +440,21 @@ public class ValidatorV2Test {
 		testee.validate();
 	}
 	
+	@Test
+	public void driver_validString_successful() throws Exception {
+		String content = "logging:\n  driver: foo";
+		Validator testee = new ValidatorV2Impl(content, validatorManager);
+		testee.validate();
+	}
+	
+	@Test
+	public void driver_asList_successful() throws Exception {
+		expectedException.expect(ClassCastException.class);
+		String content = "logging:\n   driver:\n   - foo";
+		Validator testee = new ValidatorV2Impl(content, validatorManager);
+		testee.validate();
+	}
+
 	
 	private String createNamedList(String name){
 		return String.format("%s:\n   - dummyListEntry", name);
