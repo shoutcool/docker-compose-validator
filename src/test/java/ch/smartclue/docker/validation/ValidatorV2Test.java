@@ -420,6 +420,13 @@ public class ValidatorV2Test {
 		testee.validate();
 	}
 	
+	@Test
+	public void links_unknownNode_successful() throws Exception {
+		String content = "build:\n   context: .\n   links:\n      foo: bar";
+		Validator testee = new ValidatorV2Impl(content, validatorManager);
+		testee.validate();
+	}
+	
 	
 	private String createNamedList(String name){
 		return String.format("%s:\n   - dummyListEntry", name);
