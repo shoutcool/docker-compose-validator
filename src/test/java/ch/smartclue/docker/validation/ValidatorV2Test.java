@@ -448,9 +448,24 @@ public class ValidatorV2Test {
 	}
 	
 	@Test
-	public void driver_asList_successful() throws Exception {
+	public void driver_asList_throwsException() throws Exception {
 		expectedException.expect(ClassCastException.class);
 		String content = "logging:\n   driver:\n   - foo";
+		Validator testee = new ValidatorV2Impl(content, validatorManager);
+		testee.validate();
+	}
+	
+	@Test
+	public void options_validMap_successful() throws Exception {
+		String content = "logging:\n  options:\n      foo: bar";
+		Validator testee = new ValidatorV2Impl(content, validatorManager);
+		testee.validate();
+	}
+	
+	@Test
+	public void options_asString_throwsException() throws Exception {
+		expectedException.expect(ClassCastException.class);
+		String content = "logging:\n  options: foo";
 		Validator testee = new ValidatorV2Impl(content, validatorManager);
 		testee.validate();
 	}
