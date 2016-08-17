@@ -67,7 +67,7 @@ abstract class AbstractValidatorImpl implements Validator {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void executeValidators(List<ValidatorInstance> validators, Object nodeValue) throws DockerComposeValidationException{
+	void executeValidators(List<ValidatorInstance> validators, Object nodeValue) throws DockerComposeValidationException{
 		for (ValidatorInstance instance : validators){
 			instance.getValidator().validate(nodeValue);
 		}
