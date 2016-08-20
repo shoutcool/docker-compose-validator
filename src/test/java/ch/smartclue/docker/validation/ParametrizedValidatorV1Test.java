@@ -55,8 +55,8 @@ public class ParametrizedValidatorV1Test {
         	{"dockerfile: .\nimage: .", DockerComposeValidationException.class, "not allowed to use 'dockerfile' and 'image' together"},
         	{createNamedList("cap_add"), null, null},
             {createNamedString("log_driver"), null, null},
-            {createNamedMap("log_opt"), null, null}
-        	
+            {createNamedMap("log_opt"), null, null},
+            {String.format("%s\n%s", createNamedString("net"), createNamedString("net")), null, null}
         });
     }
 	

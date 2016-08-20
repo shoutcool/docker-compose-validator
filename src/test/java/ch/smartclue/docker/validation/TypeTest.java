@@ -36,6 +36,7 @@ import ch.smartclue.docker.yml.v1.Build;
 import ch.smartclue.docker.yml.v1.Dockerfile;
 import ch.smartclue.docker.yml.v1.LogDriver;
 import ch.smartclue.docker.yml.v1.LogOpt;
+import ch.smartclue.docker.yml.v1.Net;
 import ch.smartclue.docker.yml.v2.Args;
 import ch.smartclue.docker.yml.v2.Context;
 import ch.smartclue.docker.yml.v2.Logging;
@@ -80,7 +81,8 @@ public class TypeTest {
                  {Options.class, AbstractGenericMap.class},
                  {Tmpfs.class, AbstractGenericStringOrList.class},
                  {LogDriver.class, AbstractGenericString.class},
-                 {LogOpt.class, AbstractGenericMap.class}
+                 {LogOpt.class, AbstractGenericMap.class},
+                 {Net.class, AbstractGenericString.class}
                  
                  
                  
