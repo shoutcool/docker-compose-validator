@@ -87,8 +87,11 @@ public class ParametrizedValidatorV2Test {
                  {createNamedMap("logging"), null, null},
                  {"logging:\n  driver: foo", null, null},
                  {"logging:\n  options:\n      foo: bar", null, null},
-                 {String.format("%s\n%s", createNamedString("network_mode"), createNamedString("network_mode")), null, null}
-
+                 {String.format("%s\n%s", createNamedString("network_mode"), createNamedString("network_mode")), null, null},
+                 //TODO: Networks (as sub node of the services)
+                 //TODO: Aliases (as sub node of the networks)
+                 //TODO: ipv4_address, ipv6_address (as sub node of the services)
+                 {createNamedString("pid"), null, null}
            });
     }
 	
