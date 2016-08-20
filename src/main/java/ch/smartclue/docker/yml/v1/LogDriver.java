@@ -4,7 +4,7 @@ import ch.smartclue.docker.validation.YamlProperty;
 import ch.smartclue.docker.yml.common.AbstractGenericString;
 import ch.smartclue.docker.yml.common.DockerComposeVersion;
 
-@YamlProperty(path=LogDriver.PATH, version=DockerComposeVersion.ALL)
+@YamlProperty(path=LogDriver.PATH, version=DockerComposeVersion.V1)
 public class LogDriver extends AbstractGenericString{
 
 	protected final static String PATH = "/log_driver";

@@ -54,7 +54,9 @@ public class ParametrizedValidatorV1Test {
         	{"dockerfile: .", DockerComposeValidationException.class, "'/build' must be specified"},
         	{"dockerfile: .\nimage: .", DockerComposeValidationException.class, "not allowed to use 'dockerfile' and 'image' together"},
         	{createNamedList("cap_add"), null, null},
-            {createNamedString("log_driver"), null, null} 
+            {createNamedString("log_driver"), null, null},
+            {createNamedMap("log_opt"), null, null}
+        	
         });
     }
 	
