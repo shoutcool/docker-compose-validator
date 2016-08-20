@@ -86,7 +86,9 @@ public class ParametrizedValidatorV2Test {
                  {"build:\n   context: .\n   links:\n      foo: bar", null, null},
                  {createNamedMap("logging"), null, null},
                  {"logging:\n  driver: foo", null, null},
-                 {"logging:\n  options:\n      foo: bar", null, null}
+                 {"logging:\n  options:\n      foo: bar", null, null},
+                 {String.format("%s\n%s", createNamedString("network_mode"), createNamedString("network_mode")), null, null}
+
            });
     }
 	
