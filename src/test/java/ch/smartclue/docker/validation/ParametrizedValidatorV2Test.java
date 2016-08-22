@@ -92,7 +92,8 @@ public class ParametrizedValidatorV2Test {
                  //TODO: Aliases (as sub node of the networks)
                  //TODO: ipv4_address, ipv6_address (as sub node of the services)
                  {createNamedString("pid"), null, null},
-                 {createNamedList("ports"), null, null}
+                 {createNamedList("ports"), null, null},
+                 {createNamedList("security_opt"), null, null}
            });
     }
 	
