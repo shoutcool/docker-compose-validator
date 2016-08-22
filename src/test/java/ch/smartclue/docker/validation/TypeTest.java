@@ -36,6 +36,7 @@ import ch.smartclue.docker.yml.common.Links;
 import ch.smartclue.docker.yml.common.Pid;
 import ch.smartclue.docker.yml.common.Ports;
 import ch.smartclue.docker.yml.common.SecurityOpt;
+import ch.smartclue.docker.yml.common.StopSignal;
 import ch.smartclue.docker.yml.v1.Build;
 import ch.smartclue.docker.yml.v1.Dockerfile;
 import ch.smartclue.docker.yml.v1.LogDriver;
@@ -91,7 +92,8 @@ public class TypeTest {
                  {NetworkMode.class, AbstractGenericString.class},
                  {Pid.class, AbstractGenericString.class},
                  {Ports.class, AbstractGenericList.class},
-                 {SecurityOpt.class, AbstractGenericList.class}
+                 {SecurityOpt.class, AbstractGenericList.class},
+                 {StopSignal.class, AbstractGenericString.class}
                  
                  
                  

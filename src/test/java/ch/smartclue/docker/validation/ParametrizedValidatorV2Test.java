@@ -93,7 +93,9 @@ public class ParametrizedValidatorV2Test {
                  //TODO: ipv4_address, ipv6_address (as sub node of the services)
                  {createNamedString("pid"), null, null},
                  {createNamedList("ports"), null, null},
-                 {createNamedList("security_opt"), null, null}
+                 {createNamedList("security_opt"), null, null},
+                 {createNamedString("stop_signal"), null, null},
+                 
            });
     }
 	
