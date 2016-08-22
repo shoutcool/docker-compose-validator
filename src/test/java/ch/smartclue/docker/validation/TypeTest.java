@@ -2,7 +2,6 @@ package ch.smartclue.docker.validation;
 
 import static org.junit.Assert.assertTrue;
 
-import java.security.Security;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -16,6 +15,7 @@ import ch.smartclue.docker.yml.common.AbstractGenericMap;
 import ch.smartclue.docker.yml.common.AbstractGenericMapOrList;
 import ch.smartclue.docker.yml.common.AbstractGenericString;
 import ch.smartclue.docker.yml.common.AbstractGenericStringOrList;
+import ch.smartclue.docker.yml.common.AbstractGenericStringOrMap;
 import ch.smartclue.docker.yml.common.CGroupParent;
 import ch.smartclue.docker.yml.common.CapAdd;
 import ch.smartclue.docker.yml.common.CapDrop;
@@ -37,6 +37,7 @@ import ch.smartclue.docker.yml.common.Pid;
 import ch.smartclue.docker.yml.common.Ports;
 import ch.smartclue.docker.yml.common.SecurityOpt;
 import ch.smartclue.docker.yml.common.StopSignal;
+import ch.smartclue.docker.yml.common.Ulimits;
 import ch.smartclue.docker.yml.v1.Build;
 import ch.smartclue.docker.yml.v1.Dockerfile;
 import ch.smartclue.docker.yml.v1.LogDriver;
@@ -93,7 +94,8 @@ public class TypeTest {
                  {Pid.class, AbstractGenericString.class},
                  {Ports.class, AbstractGenericList.class},
                  {SecurityOpt.class, AbstractGenericList.class},
-                 {StopSignal.class, AbstractGenericString.class}
+                 {StopSignal.class, AbstractGenericString.class},
+                 {Ulimits.class, AbstractGenericStringOrMap.class}
                  
                  
                  

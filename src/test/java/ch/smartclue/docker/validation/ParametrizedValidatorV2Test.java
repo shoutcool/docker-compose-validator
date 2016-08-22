@@ -95,6 +95,7 @@ public class ParametrizedValidatorV2Test {
                  {createNamedList("ports"), null, null},
                  {createNamedList("security_opt"), null, null},
                  {createNamedString("stop_signal"), null, null},
+                 {createNamedMap("ulimits"), null, null}
                  
            });
     }
