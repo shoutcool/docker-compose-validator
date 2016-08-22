@@ -33,6 +33,7 @@ import ch.smartclue.docker.yml.common.Image;
 import ch.smartclue.docker.yml.common.Labels;
 import ch.smartclue.docker.yml.common.Links;
 import ch.smartclue.docker.yml.common.Pid;
+import ch.smartclue.docker.yml.common.Ports;
 import ch.smartclue.docker.yml.v1.Build;
 import ch.smartclue.docker.yml.v1.Dockerfile;
 import ch.smartclue.docker.yml.v1.LogDriver;
@@ -86,7 +87,8 @@ public class TypeTest {
                  {LogOpt.class, AbstractGenericMap.class},
                  {Net.class, AbstractGenericString.class},
                  {NetworkMode.class, AbstractGenericString.class},
-                 {Pid.class, AbstractGenericString.class}
+                 {Pid.class, AbstractGenericString.class},
+                 {Ports.class, AbstractGenericList.class}
                  
                  
                  
