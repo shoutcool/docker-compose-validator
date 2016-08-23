@@ -6,7 +6,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import ch.smartclue.docker.yml.common.DockerComposeVersion;
+import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 class ValidatorInstanceFilter {
 

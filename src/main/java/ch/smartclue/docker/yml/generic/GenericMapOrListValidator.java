@@ -1,4 +1,4 @@
-package ch.smartclue.docker.yml.common;
+package ch.smartclue.docker.yml.generic;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,16 +7,10 @@ import java.util.Map;
 import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.validation.YamlValidator;
 
-public abstract class AbstractGenericMapOrList implements YamlValidator<Object> {
+public class GenericMapOrListValidator implements YamlValidator<Object> {
 
-	private String path;
-	
-	public AbstractGenericMapOrList(String path){
-		this.path = path;
-	}
-	
 	@SuppressWarnings("unchecked")
-	public void validate(Object value) throws DockerComposeValidationException {
+	public void validate(String path, Object value) throws DockerComposeValidationException {
 		if (value instanceof List){
 			List<String> list = (List<String>) value;
 			if (list.isEmpty()){

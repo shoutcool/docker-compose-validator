@@ -1,21 +1,14 @@
-package ch.smartclue.docker.yml.common;
+package ch.smartclue.docker.yml.generic;
 
-import java.util.List;
 import java.util.Map;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.validation.YamlValidator;
 
-public abstract class AbstractGenericStringOrMap implements YamlValidator<Object> {
-
-	private String path;
-	
-	public AbstractGenericStringOrMap(String path){
-		this.path = path;
-	}
+public class GenericStringOrMapValidator implements YamlValidator<Object> {
 	
 	@SuppressWarnings("unchecked")
-	public void validate(Object value) throws DockerComposeValidationException {
+	public void validate(String path, Object value) throws DockerComposeValidationException {
 		if (value instanceof String){
 			String command = String.valueOf(value);
 			if (command.trim().isEmpty()){

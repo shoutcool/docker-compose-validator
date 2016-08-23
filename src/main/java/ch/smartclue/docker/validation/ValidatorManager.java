@@ -3,7 +3,7 @@ package ch.smartclue.docker.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.smartclue.docker.yml.common.DockerComposeVersion;
+import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 class ValidatorManager {
 

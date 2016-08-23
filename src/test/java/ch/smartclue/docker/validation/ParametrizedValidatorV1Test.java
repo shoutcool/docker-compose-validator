@@ -1,14 +1,12 @@
 package ch.smartclue.docker.validation;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -35,16 +33,7 @@ public class ParametrizedValidatorV1Test {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
-	private static ValidatorManager validatorManager = new ValidatorManager();
-	
-	@BeforeClass
-	public static void initClass(){
-		List<ValidatorInstance> instances = ReflectionUtil.createValidationInstancesFromPackageName("ch.smartclue.docker.yml.common");
-		instances.addAll(ReflectionUtil.createValidationInstancesFromPackageName("ch.smartclue.docker.yml.v1"));
-		for (ValidatorInstance instance : instances){
-			validatorManager.addValidatorInstance(instance);
-		}
-	}
+	private static DockerComposeValidator validator = new DockerComposeValidator();
 	
 	@Parameters(name = "{index}: {0} throws {1}")
     public static Iterable<Object[]> data() {
@@ -69,17 +58,16 @@ public class ParametrizedValidatorV1Test {
 	        thrown.expectMessage(expectedExceptionMsg);
 	    }
 	    
-	    Validator testee = new ValidatorV1Impl(content, validatorManager);
+	    Validator testee = new ValidatorV1Impl(content, validator.getValidatorManager());
 	    AbstractValidatorImpl spiedTestee = spy((AbstractValidatorImpl)testee);
 	    spiedTestee.validate();
 	    
 	    if (expectedException != null) {
 	    	ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-	    	verify(spiedTestee).executeValidators(captor.capture(), anyObject());
+	    	verify(spiedTestee).executeValidators(captor.capture(), anyString(), anyObject());
 	    		assertTrue(captor.getValue().size() > 0);
 	    }
 	}
-		
 	
 	
 	private static String createNamedList(String name){

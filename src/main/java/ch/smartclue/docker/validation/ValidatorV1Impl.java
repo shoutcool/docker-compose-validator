@@ -1,7 +1,7 @@
 package ch.smartclue.docker.validation;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
-import ch.smartclue.docker.yml.common.DockerComposeVersion;
+import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 class ValidatorV1Impl extends AbstractValidatorImpl {
 

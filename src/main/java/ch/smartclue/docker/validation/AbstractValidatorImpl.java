@@ -10,7 +10,7 @@ import com.esotericsoftware.yamlbeans.YamlException;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.reader.StructureReader;
-import ch.smartclue.docker.yml.common.DockerComposeVersion;
+import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 abstract class AbstractValidatorImpl implements Validator {
 	protected ValidatorManager validatorManager;
@@ -40,9 +40,9 @@ abstract class AbstractValidatorImpl implements Validator {
 					&& (checkAndAddTopLevelNode(entry.getKey()) || isSubNodeOfExistingContainerNode(entry.getKey()))){
 				//threat as container node
 				List<ValidatorInstance> containerValidators = ValidatorInstanceFilter.filterValidatorsByContainerNode(validatorInstancesByVersion, true, entry.getKey());
-				executeValidators(containerValidators, entry.getValue());
+				executeValidators(containerValidators, entry.getKey(), entry.getValue());
 			}else{
-				executeValidators(filterValidatorsByPath, entry.getValue());
+				executeValidators(filterValidatorsByPath, entry.getKey(), entry.getValue());
 			}
 		}
 	}
@@ -67,15 +67,9 @@ abstract class AbstractValidatorImpl implements Validator {
 	}
 	
 	@SuppressWarnings("unchecked")
-	void executeValidators(List<ValidatorInstance> validators, Object nodeValue) throws DockerComposeValidationException{
+	void executeValidators(List<ValidatorInstance> validators, String path, Object nodeValue) throws DockerComposeValidationException{
 		for (ValidatorInstance instance : validators){
-			instance.getValidator().validate(nodeValue);
+			instance.getValidator().validate(path, nodeValue);
 		}
 	}
-
-	private boolean isContainerNode(String key) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 }

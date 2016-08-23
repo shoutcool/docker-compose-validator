@@ -1,6 +1,6 @@
 package ch.smartclue.docker.validation;
 
-import ch.smartclue.docker.yml.common.DockerComposeVersion;
+import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 @SuppressWarnings("rawtypes") 
 class ValidatorInstance {
@@ -11,15 +11,12 @@ class ValidatorInstance {
 	private DockerComposeVersion version;
 	private boolean isContainerNode;
 	
-	public ValidatorInstance(YamlValidator validator, boolean isBuiltInValidator){
-		
-		YamlProperty annotation = validator.getClass().getAnnotation(YamlProperty.class);
-		
-		this.path = annotation.path();
-		this.version = annotation.version();
+	public ValidatorInstance(String path, DockerComposeVersion version, YamlValidator validator, boolean isBuiltInValidator){
+		this.path = path;
+		this.version = version;
 		this.isBuiltInValidator = isBuiltInValidator;
 		this.validator = validator;
-		this.isContainerNode = annotation.containerProperty();
+		this.isContainerNode = path.contains("${container}");
 	}
 
 	public String getPath() {

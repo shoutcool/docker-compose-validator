@@ -1,11 +1,12 @@
 package ch.smartclue.docker.validation;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -33,16 +34,7 @@ public class ParametrizedValidatorV2Test {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
-	private static ValidatorManager validatorManager = new ValidatorManager();
-	
-	@BeforeClass
-	public static void initClass(){
-		List<ValidatorInstance> instances = ReflectionUtil.createValidationInstancesFromPackageName("ch.smartclue.docker.yml.common");
-		instances.addAll(ReflectionUtil.createValidationInstancesFromPackageName("ch.smartclue.docker.yml.v2"));
-		for (ValidatorInstance instance : instances){
-			validatorManager.addValidatorInstance(instance);
-		}
-	}
+	private static DockerComposeValidator validator = new DockerComposeValidator();	
 	
 	@Parameters(name = "{index}: {0} throws {1}")
     public static Iterable<Object[]> data() {
@@ -109,13 +101,13 @@ public class ParametrizedValidatorV2Test {
 	        thrown.expectMessage(expectedExceptionMsg);
 	    }
 	    
-	    Validator testee = new ValidatorV2Impl(content, validatorManager);
+	    Validator testee = new ValidatorV2Impl(content, validator.getValidatorManager());
 	    AbstractValidatorImpl spiedTestee = Mockito.spy((AbstractValidatorImpl)testee);
 	    spiedTestee.validate();
 	    
 	    if (expectedException != null) {
 	    	ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-	    	Mockito.verify(spiedTestee).executeValidators(captor.capture(), Mockito.anyObject());
+	    	Mockito.verify(spiedTestee).executeValidators(captor.capture(), anyString(), anyObject());
 	    	assertTrue(captor.getValue().size() > 0);
 	    }
 	}
