@@ -22,18 +22,5 @@ class ValidatorV2Impl extends AbstractValidatorImpl {
 		
 		validate(instances);
 	}
-
-	@Override
-	protected boolean isServiceNode(String path) {
-		//In Version 2 the valid root nodes are /services, /volumes & /networks
-		return path.startsWith("/services/");
-	}
-
-	@Override
-	protected String getServiceName(String path) {
-		String[] split = path.split("/");
-		return "/" + split[2];
-	}
-	
 	
 }

@@ -52,15 +52,4 @@ class ValidatorV1Impl extends AbstractValidatorImpl {
 		validate(instances);
 	}
 
-	@Override
-	protected boolean isServiceNode(String path) {
-		// In Version1 all the service Nodes are on the root level, so every path has a service node in it!
-		return true;
-	}
-
-	@Override
-	protected String getServiceName(String path) {
-		String[] split = path.split("/");
-		return "/" + split[1];
-	}
 }

@@ -46,10 +46,6 @@ abstract class AbstractValidatorImpl implements Validator {
 			}
 		}
 	}
-	
-	protected abstract boolean isServiceNode(String path);
-	
-	protected abstract String getServiceName(String path);
 
 	
 	@SuppressWarnings("unchecked")
