@@ -1,5 +1,9 @@
 package ch.smartclue.docker.validation;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
@@ -8,22 +12,55 @@ class ValidatorV1Impl extends AbstractValidatorImpl {
 	public ValidatorV1Impl(String content, ValidatorManager validatorManager) throws DockerComposeValidationException {
 		super(validatorManager);
 		readStructure(content);
+		getServices();
+		
 	}
 
+	@SuppressWarnings("unchecked")
+	private void getServices(){
+		for (Entry<String, Object> entry : structure.entrySet()){
+			if (entry.getKey().split("/").length == 2){
+				Service service = new Service(entry.getKey(), (Map<String, Object>) entry.getValue());
+				services.add(service);
+			}
+		}
+	}
+	
 	public void validate() throws DockerComposeValidationException {
-		
-		if (structure.containsKey("/build") && structure.containsKey("/image")){
-			throw new DockerComposeValidationException("It is not allowed to use 'build' and 'image' together");
-		}
 
-		if (structure.containsKey("/dockerfile") && structure.containsKey("/image")){
-			throw new DockerComposeValidationException("It is not allowed to use 'dockerfile' and 'image' together");
+		for (Service service : services){
+			
+			if (service.hasSubNode("/build") && service.hasSubNode("/image")) {
+				throw new DockerComposeValidationException("It is not allowed to use 'build' and 'image' together");
+			}
+
+			if (service.hasSubNode("/dockerfile") && service.hasSubNode("/image")) {
+				throw new DockerComposeValidationException("It is not allowed to use 'dockerfile' and 'image' together");
+			}
+
+			if (service.hasSubNode("/dockerfile") && !service.hasSubNode("/build")) {
+				throw new DockerComposeValidationException("'/build' must be specified if using '/dockerfile'");
+			}
 		}
 		
-		if (structure.containsKey("/dockerfile") && !structure.containsKey("/build")){
-			throw new DockerComposeValidationException("'/build' must be specified if using '/dockerfile'");
-		}
 		
-		validate(DockerComposeVersion.ALL, DockerComposeVersion.V1);
+
+		List<ValidatorInstance> instances = validatorManager.getValidatorInstancesByVersion(DockerComposeVersion.ALL,
+				DockerComposeVersion.V1);
+		;
+
+		validate(instances);
+	}
+
+	@Override
+	protected boolean isServiceNode(String path) {
+		// In Version1 all the service Nodes are on the root level, so every path has a service node in it!
+		return true;
+	}
+
+	@Override
+	protected String getServiceName(String path) {
+		String[] split = path.split("/");
+		return "/" + split[1];
 	}
 }

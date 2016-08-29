@@ -9,5 +9,4 @@ public class CustomImageValidator implements YamlValidator<String> {
 			throw new DockerComposeValidationException(path + " must not be 'foo'");
 		}
 	}
-
 }

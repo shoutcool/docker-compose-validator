@@ -1,5 +1,7 @@
 package ch.smartclue.docker.validation;
 
+import java.util.List;
+
 import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
@@ -15,6 +17,23 @@ class ValidatorV2Impl extends AbstractValidatorImpl {
 			throw new DockerComposeValidationException("'/build/context' must be specified if using '/build/dockerfile'");
 		}
 		
-		validate(DockerComposeVersion.ALL, DockerComposeVersion.V2);
+		List<ValidatorInstance> instances = validatorManager.getValidatorInstancesByVersion(DockerComposeVersion.ALL,
+				DockerComposeVersion.V2);
+		
+		validate(instances);
 	}
+
+	@Override
+	protected boolean isServiceNode(String path) {
+		//In Version 2 the valid root nodes are /services, /volumes & /networks
+		return path.startsWith("/services/");
+	}
+
+	@Override
+	protected String getServiceName(String path) {
+		String[] split = path.split("/");
+		return "/" + split[2];
+	}
+	
+	
 }

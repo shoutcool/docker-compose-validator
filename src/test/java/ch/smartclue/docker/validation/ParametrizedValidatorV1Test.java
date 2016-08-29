@@ -15,6 +15,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
 
@@ -30,6 +31,9 @@ public class ParametrizedValidatorV1Test {
 	@Parameter(2)
 	public String expectedExceptionMsg;
 	
+	@Parameter(3)
+	public int validatorExecutions;
+	
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
@@ -38,14 +42,14 @@ public class ParametrizedValidatorV1Test {
 	@Parameters(name = "{index}: {0} throws {1}")
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
-        	{createNamedString("build"), null, null},
-        	{"build: .\nimage: .", DockerComposeValidationException.class, "not allowed to use 'build' and 'image' together"},
-        	{"dockerfile: .", DockerComposeValidationException.class, "'/build' must be specified"},
-        	{"dockerfile: .\nimage: .", DockerComposeValidationException.class, "not allowed to use 'dockerfile' and 'image' together"},
-        	{createNamedList("cap_add"), null, null},
-            {createNamedString("log_driver"), null, null},
-            {createNamedMap("log_opt"), null, null},
-            {String.format("%s\n%s", createNamedString("net"), createNamedString("net")), null, null}
+        	{createNamedString("build"), null, null, 1},
+        	{"foo:\n  build: .\n  image: .", DockerComposeValidationException.class, "not allowed to use 'build' and 'image' together", 1},
+        	{"foo:\n  dockerfile: .", DockerComposeValidationException.class, "'/build' must be specified", 1},
+        	{"foo:\n  dockerfile: .\n  image: .", DockerComposeValidationException.class, "not allowed to use 'dockerfile' and 'image' together", 1},
+        	{createNamedList("cap_add"), null, null, 1},
+            {createNamedString("log_driver"), null, null, 1},
+            {createNamedMap("log_opt"), null, null, 1},
+            {String.format("%s\n%s", createNamedString("net"), createNamedString("net")), null, null, 1}
         });
     }
 	
@@ -62,24 +66,24 @@ public class ParametrizedValidatorV1Test {
 	    AbstractValidatorImpl spiedTestee = spy((AbstractValidatorImpl)testee);
 	    spiedTestee.validate();
 	    
-	    if (expectedException != null) {
+	    if (expectedException == null) {
 	    	ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-	    	verify(spiedTestee).executeValidators(captor.capture(), anyString(), anyObject());
+	    	verify(spiedTestee, Mockito.times(validatorExecutions)).executeValidators(captor.capture(), anyString(), anyObject());
 	    		assertTrue(captor.getValue().size() > 0);
 	    }
 	}
 	
 	
 	private static String createNamedList(String name){
-		return String.format("%s:\n   - dummyListEntry", name);
+		return String.format("foo:\n  %s:\n    - dummyListEntry", name);
 	}
 	
 	private static String createNamedMap(String name){
-		return String.format("%s:\n   dummyKey: dummyValue", name);
+		return String.format("foo:\n  %s:\n    dummyKey: dummyValue", name);
 	}
 	
 	private static String createNamedString(String name){
-		return String.format("%s: dummyString", name);
+		return String.format("foo:\n  %s: dummyString", name);
 	}
 
 }

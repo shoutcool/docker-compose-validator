@@ -16,7 +16,7 @@ class ValidatorInstance {
 		this.version = version;
 		this.isBuiltInValidator = isBuiltInValidator;
 		this.validator = validator;
-		this.isContainerNode = path.contains("${container}");
+		this.isContainerNode = path.contains("${service}");
 	}
 
 	public String getPath() {

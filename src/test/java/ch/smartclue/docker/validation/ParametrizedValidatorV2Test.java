@@ -31,6 +31,9 @@ public class ParametrizedValidatorV2Test {
 	@Parameter(2)
 	public String expectedExceptionMsg;
 	
+	@Parameter(3)
+	public int validatorExecutions;
+	
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
@@ -39,55 +42,55 @@ public class ParametrizedValidatorV2Test {
 	@Parameters(name = "{index}: {0} throws {1}")
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] { 
-                 {createNamedString("build"), null, null}, 
-                 {"build:", DockerComposeValidationException.class, "must not be empty"},
-                 {"build:\n   context: .", null, null},
-                 {"build:\n   context:", DockerComposeValidationException.class, "must not be empty"},
-                 {"build:\n   args:\n      buildno: 1", DockerComposeValidationException.class, "/context' is missing"},
-                 {"build:\n   dockerfile: .", DockerComposeValidationException.class, "'/build/context' must be specified"},
-                 {"build:\n   context: .\n   args:\n      - buildno=1", null, null},
-                 {"build:\n   context: .\n   args:\n      buildno: 1", null, null},
-                 {createNamedList("cap_add"), null, null},
-                 {createNamedList("cap_drop"), null, null},
-                 {createNamedString("command"), null, null},
-                 {createNamedList("command"), null, null},
-                 {createNamedString("cgroup_parent"), null, null},
-                 {createNamedString("container_name"), null, null},
-                 {createNamedList("devices"), null, null},
-                 {createNamedString("dns"), null, null},
-                 {createNamedList("dns"), null, null},
-                 {createNamedString("dns_search"), null, null},
-                 {createNamedList("dns_search"), null, null},
-                 {createNamedString("tmpfs"), null, null},
-                 {createNamedList("tmpfs"), null, null},
-                 {createNamedString("entrypoint"), null, null},
-                 {createNamedList("entrypoint"), null, null},
-                 {createNamedString("env_file"), null, null},
-                 {createNamedList("env_file"), null, null},
-                 {createNamedMap("environment"), null, null},
-                 {createNamedList("environment"), null, null},
-                 {createNamedList("expose"), null, null},
-                 {"extends:\n  service: common", null, null},
-                 {"extends:\n  file: common.yml", DockerComposeValidationException.class, "/service' is missing"},
-                 {createNamedString("extends"), DockerComposeValidationException.class, "must be from type Map"},
-                 {createNamedList("content"), null, null},
-                 {createNamedList("extra_hosts"), null, null},
-                 {createNamedString("image"), null, null},
-                 {createNamedMap("labels"), null, null},
-                 {"web:\n   links:\n      - db", null, null},
-                 {"build:\n   context: .\n   links:\n      foo: bar", null, null},
-                 {createNamedMap("logging"), null, null},
-                 {"logging:\n  driver: foo", null, null},
-                 {"logging:\n  options:\n      foo: bar", null, null},
-                 {String.format("%s\n%s", createNamedString("network_mode"), createNamedString("network_mode")), null, null},
+                 {createNamedString("build"), null, null, 1}, 
+                 {"services:\n  foo:\n    build:", DockerComposeValidationException.class, "must not be empty", 1},
+                 {"services:\n  foo:\n    build:\n      context: .", null, null, 1},
+                 {"services:\n  foo:\n    build:\n      context:", DockerComposeValidationException.class, "must not be empty", 1},
+                 {"services:\n  foo:\n    build:\n      args:\n        buildno: 1", DockerComposeValidationException.class, "/context' is missing", 1},
+                 {"services:\n  foo:\n    build:\n      dockerfile: .", DockerComposeValidationException.class, "/build/context' is missing", 1},
+                 {"services:\n  foo:\n    build:\n      context: .\n      args:\n        - buildno=1", null, null, 1},
+                 {"services:\n  foo:\n    build:\n      context: .\n      args:\n        buildno: 1", null, null, 1},
+                 {createNamedList("cap_add"), null, null, 1},
+                 {createNamedList("cap_drop"), null, null, 1},
+                 {createNamedString("command"), null, null, 1},
+                 {createNamedList("command"), null, null, 1},
+                 {createNamedString("cgroup_parent"), null, null, 1},
+                 {createNamedString("container_name"), null, null, 1},
+                 {createNamedList("devices"), null, null, 1},
+                 {createNamedString("dns"), null, null, 1},
+                 {createNamedList("dns"), null, null, 1},
+                 {createNamedString("dns_search"), null, null, 1},
+                 {createNamedList("dns_search"), null, null, 1},
+                 {createNamedString("tmpfs"), null, null, 1},
+                 {createNamedList("tmpfs"), null, null, 1},
+                 {createNamedString("entrypoint"), null, null, 1},
+                 {createNamedList("entrypoint"), null, null, 1},
+                 {createNamedString("env_file"), null, null, 1},
+                 {createNamedList("env_file"), null, null, 1},
+                 {createNamedMap("environment"), null, null, 1},
+                 {createNamedList("environment"), null, null, 1},
+                 {createNamedList("expose"), null, null, 1},
+                 {"services:\n  foo:\n    extends:\n      service: common", null, null, 1},
+                 {"services:\n  foo:\n    extends:\n      file: common.yml", DockerComposeValidationException.class, "/service' is missing", 1},
+                 {createNamedString("extends"), DockerComposeValidationException.class, "must be from type Map", 1},
+                 {createNamedList("content"), null, null, 1},
+                 {createNamedList("extra_hosts"), null, null, 1},
+                 {createNamedString("image"), null, null, 1},
+                 {createNamedMap("labels"), null, null, 1},
+                 {"services:\n  foo:\n    links:\n      - db", null, null, 1},
+                 {"services:\n  foo:\n    build:\n      context: .\n      links:\n      foo: bar", null, null, 1},
+                 {createNamedMap("logging"), null, null, 1},
+                 {"services:\n  foo:\n    logging:\n      driver: foo", null, null, 1},
+                 {"services:\n  foo:\n    logging:\n      options:\n        foo: bar", null, null, 1},
+                 {String.format("services:\n  foo:\n    %s\n    %s", createNamedString("network_mode"), createNamedString("network_mode")), null, null, 1},
                  //TODO: Networks (as sub node of the services)
                  //TODO: Aliases (as sub node of the networks)
                  //TODO: ipv4_address, ipv6_address (as sub node of the services)
-                 {createNamedString("pid"), null, null},
-                 {createNamedList("ports"), null, null},
-                 {createNamedList("security_opt"), null, null},
-                 {createNamedString("stop_signal"), null, null},
-                 {createNamedMap("ulimits"), null, null}
+                 {createNamedString("pid"), null, null, 1},
+                 {createNamedList("ports"), null, null, 1},
+                 {createNamedList("security_opt"), null, null, 1},
+                 {createNamedString("stop_signal"), null, null, 1},
+                 {createNamedMap("ulimits"), null, null, 1}
                  
            });
     }
@@ -107,7 +110,7 @@ public class ParametrizedValidatorV2Test {
 	    
 	    if (expectedException != null) {
 	    	ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-	    	Mockito.verify(spiedTestee).executeValidators(captor.capture(), anyString(), anyObject());
+	    	Mockito.verify(spiedTestee, Mockito.times(validatorExecutions)).executeValidators(captor.capture(), anyString(), anyObject());
 	    	assertTrue(captor.getValue().size() > 0);
 	    }
 	}
@@ -115,15 +118,15 @@ public class ParametrizedValidatorV2Test {
 	
 	
 	private static String createNamedList(String name){
-		return String.format("%s:\n   - dummyListEntry", name);
+		return String.format("services:\n  foo:\n    %s:\n      - dummyListEntry", name);
 	}
 	
 	private static String createNamedMap(String name){
-		return String.format("%s:\n   dummyKey: dummyValue", name);
+		return String.format("services:\n  foo:\n    %s:\n      dummyKey: dummyValue", name);
 	}
 	
 	private static String createNamedString(String name){
-		return String.format("%s: dummyString", name);
+		return String.format("services:\n  foo:\n    %s: dummyString", name);
 	}
 
 }

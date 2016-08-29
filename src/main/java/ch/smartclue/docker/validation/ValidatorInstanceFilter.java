@@ -18,8 +18,10 @@ class ValidatorInstanceFilter {
 		 return Lists.newArrayList(Iterables.filter(validators, createPathPredicate(path)));
 	}
 	
-	public static List<ValidatorInstance> filterValidatorsByContainerNode(List<ValidatorInstance> validators, boolean isContainerNode, String key){
-		 return Lists.newArrayList(Iterables.filter(validators, createContainerNodePredicate(isContainerNode, key)));
+	public static List<ValidatorInstance> filterValidatorsByServiceNode(List<ValidatorInstance> validators, boolean isServiceNode, String path){
+		 List<ValidatorInstance> result =  Lists.newArrayList(Iterables.filter(validators, createServiceNodePredicate(isServiceNode, path)));
+		 result.addAll(Lists.newArrayList(Iterables.filter(validators, createPathPredicate(path))));
+		 return result;
 	}
 	
 	private static Predicate<ValidatorInstance> createVersionPredicate(final DockerComposeVersion[] versions) {
@@ -43,21 +45,13 @@ class ValidatorInstanceFilter {
 	    };
 	}
 
-	private static Predicate<ValidatorInstance> createContainerNodePredicate(final boolean isContainerNode, final String key) {
+	private static Predicate<ValidatorInstance> createServiceNodePredicate(final boolean isContainerNode, final String key) {
 	    return new Predicate<ValidatorInstance>() {
 	        public boolean apply(ValidatorInstance input) {
 	            return input.isContainerNode() == isContainerNode &&
-	            		input.getPath().replace("${container}", getContainerName(key)).equals(key);
+	            		input.getPath().replace("${service}", ServiceNameHelper.getServiceNameFromPath(key)).equals(key);
 	        }
 	    };
 	}
 
-	private static String getContainerName(String key) {
-		int endIndex = key.indexOf("/", 1);
-		if (endIndex != -1){
-			return key.substring(1, endIndex);			
-		}else{
-			return key.substring(1);
-		}
-	}
 }

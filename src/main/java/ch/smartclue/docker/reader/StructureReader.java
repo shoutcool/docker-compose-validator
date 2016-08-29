@@ -1,15 +1,15 @@
 package ch.smartclue.docker.reader;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
 public class StructureReader {
 
-	private Map<String, Object> entries = new HashMap<String, Object>();
+	private Map<String, Object> entries = new TreeMap<String, Object>();
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> readStructure(String content) throws YamlException {

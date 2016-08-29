@@ -6,16 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.esotericsoftware.yamlbeans.YamlException;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.reader.StructureReader;
-import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 abstract class AbstractValidatorImpl implements Validator {
 	protected ValidatorManager validatorManager;
+	protected List<Service> services = new ArrayList<Service>();
 	protected Map<String, Object> structure = new HashMap<String, Object>();
-	private List<String> containerNodes = new ArrayList<String>();
+	private Logger logger = LoggerFactory.getLogger(AbstractValidatorImpl.class);
+    
 	
 	public AbstractValidatorImpl(ValidatorManager validatorManager){
 		this.validatorManager = validatorManager;
@@ -31,40 +35,22 @@ abstract class AbstractValidatorImpl implements Validator {
 		}
 	}
 	
-	protected void validate(DockerComposeVersion... versions) throws DockerComposeValidationException {
+	protected void validate(List<ValidatorInstance> validatorInstances) throws DockerComposeValidationException {
 		for (Entry<String, Object> entry : structure.entrySet()) {
-			List<ValidatorInstance> validatorInstancesByVersion = validatorManager.getValidatorInstancesByVersion(versions);
-			List<ValidatorInstance> filterValidatorsByPath = ValidatorInstanceFilter.filterValidatorsByPath(validatorInstancesByVersion, entry.getKey());
 
-			if (filterValidatorsByPath.isEmpty() 
-					&& (checkAndAddTopLevelNode(entry.getKey()) || isSubNodeOfExistingContainerNode(entry.getKey()))){
-				//threat as container node
-				List<ValidatorInstance> containerValidators = ValidatorInstanceFilter.filterValidatorsByContainerNode(validatorInstancesByVersion, true, entry.getKey());
+			List<ValidatorInstance> containerValidators = ValidatorInstanceFilter.filterValidatorsByServiceNode(validatorInstances, true, entry.getKey());
+			if (!containerValidators.isEmpty()){
 				executeValidators(containerValidators, entry.getKey(), entry.getValue());
 			}else{
-				executeValidators(filterValidatorsByPath, entry.getKey(), entry.getValue());
+				logger.info(String.format("No validators found for node '%s'", entry.getKey()));
 			}
 		}
 	}
 	
-	private boolean isSubNodeOfExistingContainerNode(String key) {
-		for (String containerNodeName : containerNodes){
-			if (key.startsWith(containerNodeName)){
-				return true;
-			}
-		}
-		
-		return false;
-	}
+	protected abstract boolean isServiceNode(String path);
+	
+	protected abstract String getServiceName(String path);
 
-	private boolean checkAndAddTopLevelNode(String nodePath){
-		boolean isTopLevelNode = nodePath.indexOf("/", 1) == -1;
-		if (isTopLevelNode){
-			containerNodes.add(nodePath);
-		}
-		
-		return isTopLevelNode;
-	}
 	
 	@SuppressWarnings("unchecked")
 	void executeValidators(List<ValidatorInstance> validators, String path, Object nodeValue) throws DockerComposeValidationException{

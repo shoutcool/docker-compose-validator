@@ -16,10 +16,10 @@ public class ValidatorV1Test {
 	public void customValidator_image_throwsException() throws Exception{
 		expectedException.expect(DockerComposeValidationException.class);
 		expectedException.expectMessage("must not be 'foo'");
-		String content = "image: foo";
+		String content = "foo:\n  image: foo";
 		
 		DockerComposeValidator testee = new DockerComposeValidator();
-		testee.addCustomValidator("/image", DockerComposeVersion.V1, new CustomImageValidator());
+		testee.addCustomValidator("/foo/image", DockerComposeVersion.V1, new CustomImageValidator());
 		testee.validate(content);
 	}
 	

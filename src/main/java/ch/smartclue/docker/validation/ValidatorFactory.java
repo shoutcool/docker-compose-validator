@@ -30,7 +30,7 @@ class ValidatorFactory {
 	}
 
 	private static boolean isVersion2(String firstLine) {
-		return false;
+		return "version: '2'".equals(firstLine.trim());
 	}
 
 }
