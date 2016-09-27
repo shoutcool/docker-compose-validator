@@ -18,6 +18,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
+import ch.smartclue.docker.reader.StructureReader;
+import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 @RunWith(Parameterized.class)
 public class ParametrizedValidatorV1Test {
@@ -62,13 +64,17 @@ public class ParametrizedValidatorV1Test {
 	        thrown.expectMessage(expectedExceptionMsg);
 	    }
 	    
-	    Validator testee = new ValidatorV1Impl(content, validator.getValidatorManager());
-	    AbstractValidatorImpl spiedTestee = spy((AbstractValidatorImpl)testee);
-	    spiedTestee.validate();
+	    StructureReader structureReader = new StructureReader();
+	    List<ValidatorInstance> instances = validator.getValidatorManager().getValidatorInstancesByVersion(DockerComposeVersion.ALL,DockerComposeVersion.V1);
+	    
+	    ValidationExecutor spiedExecutor = spy(new ValidationExecutor());
+	    
+	    Validator testee = new ValidatorV1Impl(instances, spiedExecutor, structureReader.readStructure(content));
+	    testee.validate();
 	    
 	    if (expectedException == null) {
 	    	ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-	    	verify(spiedTestee, Mockito.times(validatorExecutions)).executeValidators(captor.capture(), anyString(), anyObject());
+	    	verify(spiedExecutor, Mockito.times(validatorExecutions)).executeValidators(captor.capture(), anyString(), anyObject());
 	    		assertTrue(captor.getValue().size() > 0);
 	    }
 	}

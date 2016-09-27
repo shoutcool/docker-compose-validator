@@ -20,8 +20,32 @@ public class Service {
 		return structure;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public boolean hasSubNode(String node){
-		return structure.containsKey(node.substring(1));
+		
+		if (node.startsWith("/")){
+			node = node.substring(1);
+		}
+		
+		String[] elements = node.split("/");
+		
+		Map<String, Object> workStructure = structure;
+		for(int i = 0; i<elements.length; i++){
+			String element = elements[i];
+			if (workStructure.containsKey(element)){
+				if (i < elements.length -1){
+					//Noch nicht das letzte Element --> Muss eine Map sein
+					Object object = workStructure.get(element);
+					if (object instanceof Map){
+						workStructure = (Map<String, Object>) workStructure.get(element);
+					}
+				}
+			}else{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

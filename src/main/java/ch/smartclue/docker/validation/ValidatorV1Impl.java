@@ -1,55 +1,60 @@
 package ch.smartclue.docker.validation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
-import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
-class ValidatorV1Impl extends AbstractValidatorImpl {
+class ValidatorV1Impl implements Validator {
 
-	public ValidatorV1Impl(String content, ValidatorManager validatorManager) throws DockerComposeValidationException {
-		super(validatorManager);
-		readStructure(content);
-		getServices();
-		
+	private List<Service> services;
+	private List<ValidatorInstance> instances;
+	private ValidationExecutor executor;
+	private Map<String, Object> structure;
+
+	public ValidatorV1Impl(List<ValidatorInstance> instances, ValidationExecutor executor,
+			Map<String, Object> structure) throws DockerComposeValidationException {
+		this.instances = instances;
+		this.executor = executor;
+		this.structure = structure;
+
+		services = readServices();
+
 	}
 
 	@SuppressWarnings("unchecked")
-	private void getServices(){
-		for (Entry<String, Object> entry : structure.entrySet()){
-			if (entry.getKey().split("/").length == 2){
+	List<Service> readServices() {
+		List<Service> serviceList = new ArrayList<Service>();
+		for (Entry<String, Object> entry : structure.entrySet()) {
+			if (entry.getKey().split("/").length == 2) {
 				Service service = new Service(entry.getKey(), (Map<String, Object>) entry.getValue());
-				services.add(service);
+				serviceList.add(service);
 			}
 		}
+		return serviceList;
 	}
-	
-	public void validate() throws DockerComposeValidationException {
 
-		for (Service service : services){
-			
+	public void validate() throws DockerComposeValidationException {
+		for (Service service : services) {
 			if (service.hasSubNode("/build") && service.hasSubNode("/image")) {
 				throw new DockerComposeValidationException("It is not allowed to use 'build' and 'image' together");
 			}
 
 			if (service.hasSubNode("/dockerfile") && service.hasSubNode("/image")) {
-				throw new DockerComposeValidationException("It is not allowed to use 'dockerfile' and 'image' together");
+				throw new DockerComposeValidationException(
+						"It is not allowed to use 'dockerfile' and 'image' together");
 			}
 
 			if (service.hasSubNode("/dockerfile") && !service.hasSubNode("/build")) {
 				throw new DockerComposeValidationException("'/build' must be specified if using '/dockerfile'");
 			}
 		}
-		
-		
 
-		List<ValidatorInstance> instances = validatorManager.getValidatorInstancesByVersion(DockerComposeVersion.ALL,
-				DockerComposeVersion.V1);
-		;
+		// 
 
-		validate(instances);
+		executor.validate(instances, structure);
 	}
 
 }

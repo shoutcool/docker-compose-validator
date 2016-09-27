@@ -1,8 +1,12 @@
 package ch.smartclue.docker.validation;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
+import ch.smartclue.docker.reader.StructureReader;
+import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 class ValidatorFactory {
 
@@ -14,10 +18,15 @@ class ValidatorFactory {
 			if (scanner.hasNextLine()) {
 				String firstLine = scanner.nextLine();
 				
+				StructureReader structureReader = new StructureReader();
+				Map<String, Object> structure = structureReader.readStructure(content);
+				
 				if (isVersion2(firstLine)){
-					return new ValidatorV2Impl(content, validatorManager);
+					List<ValidatorInstance> instances = validatorManager.getValidatorInstancesByVersion(DockerComposeVersion.ALL,DockerComposeVersion.V2);
+					return new ValidatorV2Impl(instances, new ValidationExecutor(), structure);
 				} else {
-					return new ValidatorV1Impl(content, validatorManager);
+					List<ValidatorInstance> instances = validatorManager.getValidatorInstancesByVersion(DockerComposeVersion.ALL,	DockerComposeVersion.V1);
+					return new ValidatorV1Impl(instances, new ValidationExecutor(), structure);
 				}
 			}
 		} finally {

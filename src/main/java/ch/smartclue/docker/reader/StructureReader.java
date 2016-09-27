@@ -7,14 +7,22 @@ import java.util.TreeMap;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
+import ch.smartclue.docker.exception.YamlParsingException;
+
 public class StructureReader {
 
 	private Map<String, Object> entries = new TreeMap<String, Object>();
-
+	
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> readStructure(String content) throws YamlException {
+	public Map<String, Object> readStructure(String content){
 		YamlReader reader = new YamlReader(content);
-		return readSubStructure((Map<String, Object>) reader.read(), entries, "");
+		
+		try {
+			Map<String, Object> structure = (Map<String, Object>) reader.read();
+			return readSubStructure(structure, entries, "");
+		} catch (YamlException e) {
+			throw new YamlParsingException("Failure while parsing yaml content", e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

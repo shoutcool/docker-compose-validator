@@ -10,7 +10,7 @@ import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 class ValidatorInstanceFilter {
 
-	public static List<ValidatorInstance> filterValidatorsByVersion(List<ValidatorInstance> validators, DockerComposeVersion[] versions){
+	public static List<ValidatorInstance> filterValidatorsByVersion(List<ValidatorInstance> validators, DockerComposeVersion... versions){
 		 return Lists.newArrayList(Iterables.filter(validators, createVersionPredicate(versions)));
 	}
 	
@@ -24,7 +24,7 @@ class ValidatorInstanceFilter {
 		 return result;
 	}
 	
-	private static Predicate<ValidatorInstance> createVersionPredicate(final DockerComposeVersion[] versions) {
+	private static Predicate<ValidatorInstance> createVersionPredicate(final DockerComposeVersion... versions) {
 	    return new Predicate<ValidatorInstance>() {
 	        public boolean apply(ValidatorInstance input) {
 	        	for(DockerComposeVersion version : versions){

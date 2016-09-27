@@ -12,12 +12,13 @@ import ch.smartclue.docker.yml.generic.GenericStringValidator;
 import ch.smartclue.docker.yml.v2.BuildValidator;
 
 public class DockerComposeValidator {
-	
-	private ValidatorManager validatorManager = new ValidatorManager();
-	
-	public DockerComposeValidator(){
-		
-		//COMMON VALIDATORS
+
+	private ValidatorManager validatorManager;
+
+	DockerComposeValidator(ValidatorManager validatorManager) {
+		this.validatorManager = validatorManager;
+
+		// COMMON VALIDATORS
 		addDefaultValidator("/${service}/cap_add", DockerComposeVersion.ALL, new GenericListValidator());
 		addDefaultValidator("/${service}/cap_drop", DockerComposeVersion.ALL, new GenericListValidator());
 		addDefaultValidator("/${service}/cgroup_parent", DockerComposeVersion.ALL, new GenericStringValidator());
@@ -41,17 +42,15 @@ public class DockerComposeValidator {
 		addDefaultValidator("/${service}/security_opt", DockerComposeVersion.ALL, new GenericListValidator());
 		addDefaultValidator("/${service}/stop_signal", DockerComposeVersion.ALL, new GenericStringValidator());
 		addDefaultValidator("/${service}/ulimits", DockerComposeVersion.ALL, new GenericStringOrMapValidator());
-		
-		
-		
-		//V1 VALIDATORS
+
+		// V1 VALIDATORS
 		addDefaultValidator("/${service}/build", DockerComposeVersion.V1, new GenericStringValidator());
 		addDefaultValidator("/${service}/dockerfile", DockerComposeVersion.V1, new GenericStringValidator());
 		addDefaultValidator("/${service}/log_driver", DockerComposeVersion.V1, new GenericStringValidator());
 		addDefaultValidator("/${service}/log_opt", DockerComposeVersion.V1, new GenericMapValidator());
 		addDefaultValidator("/${service}/net", DockerComposeVersion.V1, new GenericStringValidator());
-		
-		//V2 VALIDATORS
+
+		// V2 VALIDATORS
 		addDefaultValidator("/services", DockerComposeVersion.V2, new GenericMapOrListValidator());
 		addDefaultValidator("/volumes", DockerComposeVersion.V2, new GenericMapOrListValidator());
 		addDefaultValidator("/networks", DockerComposeVersion.V2, new GenericMapOrListValidator());
@@ -67,24 +66,29 @@ public class DockerComposeValidator {
 		addDefaultValidator("/${service}/tmpfs", DockerComposeVersion.V2, new GenericStringOrListValidator());
 	}
 
-	public void addCustomValidator(String path, DockerComposeVersion version, YamlValidator<?> validator){
+	public DockerComposeValidator() {
+		this(new ValidatorManager());
+	}
+
+	public void addCustomValidator(String path, DockerComposeVersion version, YamlValidator<?> validator) {
 		addValidator(path, version, validator, false);
 	}
-	
-	private void addDefaultValidator(String path, DockerComposeVersion version, YamlValidator<?> validator){
+
+	private void addDefaultValidator(String path, DockerComposeVersion version, YamlValidator<?> validator) {
 		addValidator(path, version, validator, true);
 	}
-	
-	private void addValidator(String path, DockerComposeVersion version, YamlValidator<?> validator, boolean isBuiltInValidator){
+
+	private void addValidator(String path, DockerComposeVersion version, YamlValidator<?> validator,
+			boolean isBuiltInValidator) {
 		ValidatorInstance instance = new ValidatorInstance(path, version, validator, isBuiltInValidator);
 		validatorManager.addValidatorInstance(instance);
 	}
-	
-	ValidatorManager getValidatorManager(){
+
+	ValidatorManager getValidatorManager() {
 		return validatorManager;
 	}
-	
-	public void validate(String content) throws DockerComposeValidationException{
+
+	public void validate(String content) throws DockerComposeValidationException {
 		Validator validator = ValidatorFactory.create(content, validatorManager);
 		validator.validate();
 	}

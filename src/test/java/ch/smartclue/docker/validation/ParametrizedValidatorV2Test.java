@@ -3,6 +3,7 @@ package ch.smartclue.docker.validation;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.spy;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +19,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
+import ch.smartclue.docker.reader.StructureReader;
+import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
 @RunWith(Parameterized.class)
 public class ParametrizedValidatorV2Test {
@@ -47,7 +50,7 @@ public class ParametrizedValidatorV2Test {
                  {"services:\n  foo:\n    build:\n      context: .", null, null, 1},
                  {"services:\n  foo:\n    build:\n      context:", DockerComposeValidationException.class, "must not be empty", 1},
                  {"services:\n  foo:\n    build:\n      args:\n        buildno: 1", DockerComposeValidationException.class, "/context' is missing", 1},
-                 {"services:\n  foo:\n    build:\n      dockerfile: .", DockerComposeValidationException.class, "/build/context' is missing", 1},
+                 {"services:\n  foo2:\n    build:\n      dockerfile: .", DockerComposeValidationException.class, "'/build/context' must be specified", 1},
                  {"services:\n  foo:\n    build:\n      context: .\n      args:\n        - buildno=1", null, null, 1},
                  {"services:\n  foo:\n    build:\n      context: .\n      args:\n        buildno: 1", null, null, 1},
                  {createNamedList("cap_add"), null, null, 1},
@@ -104,13 +107,17 @@ public class ParametrizedValidatorV2Test {
 	        thrown.expectMessage(expectedExceptionMsg);
 	    }
 	    
-	    Validator testee = new ValidatorV2Impl(content, validator.getValidatorManager());
-	    AbstractValidatorImpl spiedTestee = Mockito.spy((AbstractValidatorImpl)testee);
-	    spiedTestee.validate();
+	    StructureReader structureReader = new StructureReader();
+	    List<ValidatorInstance> instances = validator.getValidatorManager().getValidatorInstancesByVersion(DockerComposeVersion.ALL,DockerComposeVersion.V2);
+	    
+	    ValidationExecutor spiedExecutor = spy(new ValidationExecutor());
+	    
+	    Validator testee = new ValidatorV2Impl(instances, spiedExecutor, structureReader.readStructure(content));
+	    testee.validate();
 	    
 	    if (expectedException != null) {
 	    	ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-	    	Mockito.verify(spiedTestee, Mockito.times(validatorExecutions)).executeValidators(captor.capture(), anyString(), anyObject());
+	    	Mockito.verify(spiedExecutor, Mockito.times(validatorExecutions)).executeValidators(captor.capture(), anyString(), anyObject());
 	    	assertTrue(captor.getValue().size() > 0);
 	    }
 	}

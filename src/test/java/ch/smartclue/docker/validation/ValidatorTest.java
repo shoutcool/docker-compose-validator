@@ -1,7 +1,5 @@
 package ch.smartclue.docker.validation;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 

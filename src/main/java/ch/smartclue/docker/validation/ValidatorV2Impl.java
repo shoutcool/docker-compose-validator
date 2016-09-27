@@ -1,26 +1,46 @@
 package ch.smartclue.docker.validation;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
-import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
-class ValidatorV2Impl extends AbstractValidatorImpl {
+class ValidatorV2Impl implements Validator {
 	
-	public ValidatorV2Impl(String content, ValidatorManager validatorManager) throws DockerComposeValidationException {
-		super(validatorManager);
-		readStructure(content);
+	private List<ValidatorInstance> instances;
+	private ValidationExecutor executor;
+	private Map<String, Object> structure;
+	private List<Service> services;
+
+	public ValidatorV2Impl(List<ValidatorInstance> instances, ValidationExecutor executor, Map<String, Object> structure) throws DockerComposeValidationException {
+		this.instances = instances;
+		this.executor = executor;
+		this.structure = structure;
+		
+		services = readServices();
 	}
 
 	public void validate() throws DockerComposeValidationException {
-		if (structure.containsKey("/build/dockerfile") && !structure.containsKey("/build/context")){
-			throw new DockerComposeValidationException("'/build/context' must be specified if using '/build/dockerfile'");
+		for (Service service : services){
+			if (service.hasSubNode("/build/dockerfile") && !service.hasSubNode("/build/context")) {
+				throw new DockerComposeValidationException("'/build/context' must be specified if using '/build/dockerfile'");
+			}
 		}
-		
-		List<ValidatorInstance> instances = validatorManager.getValidatorInstancesByVersion(DockerComposeVersion.ALL,
-				DockerComposeVersion.V2);
-		
-		validate(instances);
+		executor.validate(instances, structure);
+	}
+
+	@SuppressWarnings("unchecked")
+	List<Service> readServices() {
+		List<Service> serviceList = new ArrayList<Service>();
+		for (Entry<String, Object> entry : structure.entrySet()){
+			if (entry.getKey().split("/").length == 3 && entry.getKey().startsWith("/services/")){
+				Service service = new Service(entry.getKey(), (Map<String, Object>) entry.getValue());
+				serviceList.add(service);
+			}
+		}
+		return serviceList;
 	}
 	
 }
