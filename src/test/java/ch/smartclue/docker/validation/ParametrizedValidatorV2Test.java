@@ -121,7 +121,6 @@ public class ParametrizedValidatorV2Test {
 	    	assertTrue(captor.getValue().size() > 0);
 	    }
 	}
-		
 	
 	
 	private static String createNamedList(String name){
