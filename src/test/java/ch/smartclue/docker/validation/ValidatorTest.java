@@ -15,6 +15,7 @@ public class ValidatorTest{
 		
 		DockerComposeValidator testee = new DockerComposeValidator();
 		testee.validate(content);
+		
 	}
 
 	@Test

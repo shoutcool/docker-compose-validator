@@ -22,12 +22,12 @@ public class Service {
 	
 	@SuppressWarnings("unchecked")
 	public boolean hasSubNode(String node){
-		
-		if (node.startsWith("/")){
-			node = node.substring(1);
+		String workNode = node;
+		if (workNode.startsWith("/")){
+			workNode = workNode.substring(1);
 		}
 		
-		String[] elements = node.split("/");
+		String[] elements = workNode.split("/");
 		
 		Map<String, Object> workStructure = structure;
 		for(int i = 0; i<elements.length; i++){

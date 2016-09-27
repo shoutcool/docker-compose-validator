@@ -1,8 +1,11 @@
 package ch.smartclue.docker.validation;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +18,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
 import ch.smartclue.docker.reader.StructureReader;
@@ -74,7 +76,7 @@ public class ParametrizedValidatorV1Test {
 	    
 	    if (expectedException == null) {
 	    	ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-	    	verify(spiedExecutor, Mockito.times(validatorExecutions)).executeValidators(captor.capture(), anyString(), anyObject());
+	    	verify(spiedExecutor, times(validatorExecutions)).executeValidators(captor.capture(), anyString(), anyObject());
 	    		assertTrue(captor.getValue().size() > 0);
 	    }
 	}
