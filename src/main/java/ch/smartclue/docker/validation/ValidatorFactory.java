@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import ch.smartclue.docker.exception.DockerComposeValidationException;
+import ch.smartclue.docker.exception.YamlParsingException;
 import ch.smartclue.docker.reader.StructureReader;
 import ch.smartclue.docker.yml.generic.DockerComposeVersion;
 
@@ -16,12 +17,10 @@ class ValidatorFactory {
 		try {
 			scanner = new Scanner(content);
 			if (scanner.hasNextLine()) {
-				String firstLine = scanner.nextLine();
-				
 				StructureReader structureReader = new StructureReader();
 				Map<String, Object> structure = structureReader.readStructure(content);
 				
-				if (isVersion2(firstLine)){
+				if (isVersion2(structure)){
 					List<ValidatorInstance> instances = validatorManager.getValidatorInstancesByVersion(DockerComposeVersion.ALL,DockerComposeVersion.V2);
 					return new ValidatorV2Impl(instances, new ValidationExecutor(), structure);
 				} else {
@@ -38,8 +37,17 @@ class ValidatorFactory {
 		throw new IllegalArgumentException("No Content in YAML File found!");
 	}
 
-	private static boolean isVersion2(String firstLine) {
-		return "version: '2'".equals(firstLine.trim());
+	private static boolean isVersion2(Map<String, Object> structure) {
+		
+		if (structure.containsKey("/version")){
+			String value = structure.get("/version").toString();
+			if ("2".equals(value)){
+				return true;
+			}else{
+				throw new YamlParsingException(value + " is no valid version!");
+			}
+		}
+		
+		return false;
 	}
-
 }
